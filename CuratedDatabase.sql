@@ -83,3 +83,94 @@ CREATE TABLE "Entry"
 );
 ALTER TABLE "Entry" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Doc_ID") REFERENCES "Document"("DB_Doc_ID") ON DELETE CASCADE;
 
+
+create table "Study_entry_list"(
+"DB_Study_ID" serial,
+"DB_BMRB_accession_code" char(12),
+"BMRB_entry_description" varchar(127),
+"Details" text,
+primary key ("DB_Study_ID","DB_BMRB_accession_code")
+);
+
+create table "Person_affiliation"(
+"DB_Person_affiliations_ID" serial,
+"DB_Person_ID" int not null,
+"DB_Org_unit_ID" int not null,
+"From_date" timestamp,
+"To_date" timestamp,
+"Email_address" varchar(127),
+"Mailing_address_ext" varchar(127),
+"Phone_number" varchar(31),
+"Cell_phone_number" varchar(31),
+"FAX_number" varchar(31),
+"URL" varchar(127),
+primary key ("DB_Person_affiliations_ID")
+);
+
+
+create table "Person"(
+"DB_Person_ID" serial,
+"Name_salutation" varchar(31),
+"Given_name" varchar(31),
+"Family_name" varchar(31),
+"First_initial" varchar(15),
+"Middle_initials" varchar(15),
+"Family_title" varchar(15),
+primary key ("DB_Person_ID")
+);
+
+
+create table "Project"(
+"DB_Project_ID" serial,
+"Name" varchar(127),
+"Type" varchar(31),
+primary key ("DB_Project_ID")
+);
+
+
+create table "Organization"(
+"DB_Organization_ID" serial,
+"Name" varchar(127),
+"Acronym" varchar(31),
+primary key ("DB_Organization_ID")
+);
+
+
+create table "Organization_unit"(
+"DB_Org_unit_ID" serial,
+"DB_Organization_ID" int not null,
+"DB_City_Site_ID" int not null,
+"Unit_name" varchar(127),
+"Address_1" varchar(127),
+"Address_2" varchar(127),
+"Address_3" varchar(127),
+"Address_4" varchar(127),
+"Postal_code" varchar(31),
+primary key ("DB_Org_unit_ID")
+);
+
+create table "City_Site"(
+"DB_City_Site_ID" serial,
+"DB_Country_ID" int not null,
+"Name" varchar(31),
+"State" varchar(31),
+primary key ("DB_City_Site_ID")
+);
+
+create table "Country"(
+"DB_Country_ID" serial,
+"Name" varchar(127),
+primary key ("DB_Country_ID")
+);
+
+
+--alter table City_Site add foreign key (DB_Country_ID) references Country(DB_Country_ID);
+ALTER TABLE "City_Site" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Country_ID") REFERENCES "Country"("DB_Country_ID") ON DELETE CASCADE;
+--alter table Organization_unit add foreign key (DB_Organization_ID) references Organization(DB_Organization_ID);
+ALTER TABLE "Organization_unit" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Organization_ID") REFERENCES "Organization"("DB_Organization_ID") ON DELETE CASCADE;
+--alter table Organization_unit add foreign key (DB_City_Site_ID) references City_Site(DB_City_Site_ID);
+ALTER TABLE "Organization_unit" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_City_Site_ID") REFERENCES "City_Site"("DB_City_Site_ID") ON DELETE CASCADE;
+--alter table Person_affiliation add foreign key (DB_Person_ID) references Person(DB_Person_ID);
+ALTER TABLE "Person_affiliation" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Person_ID") REFERENCES "Person"("DB_Person_ID") ON DELETE CASCADE;
+--alter table Person_affiliation add foreign key (DB_Org_unit_ID) references Organization_unit(DB_Org_unit_ID);
+ALTER TABLE "Person_affiliation" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Org_unit_ID") REFERENCES "Organization_unit"("DB_Org_unit_ID") ON DELETE CASCADE;

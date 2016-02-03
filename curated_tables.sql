@@ -210,7 +210,7 @@ Abbreviation varchar(127),
 primary key (DB_Conference_ID)
 );
 
-create tbale Conference_instance(
+create table Conference_instance(
 DB_Conference_inst_ID int not null,
 DB_Conference_ID int not null,
 DB_City_Site_ID int not null,
@@ -226,13 +226,3 @@ DB_Doc_ID int not null,
 Abstract_number int,
 primary key DB_Doc_ID
 );
-
-
-
-
-
-
-
-
-
-

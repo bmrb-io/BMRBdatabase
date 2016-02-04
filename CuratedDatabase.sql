@@ -174,3 +174,81 @@ ALTER TABLE "Organization_unit" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_City_Site_ID
 ALTER TABLE "Person_affiliation" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Person_ID") REFERENCES "Person"("DB_Person_ID") ON DELETE CASCADE;
 --alter table Person_affiliation add foreign key (DB_Org_unit_ID) references Organization_unit(DB_Org_unit_ID);
 ALTER TABLE "Person_affiliation" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Org_unit_ID") REFERENCES "Organization_unit"("DB_Org_unit_ID") ON DELETE CASCADE;
+
+
+create table "Journal"(
+"DB_Journal_ID" serial,
+"Abbreviation" varchar(127),
+"Name" varchar(125),
+"EXT_ASTM" varchar(127),
+"EXT_ISSN" varchar(127),
+"EXT_CSD" varchar(127),
+primary key ("DB_Journal_ID")
+);
+
+create table "Journal_paper"(
+"DB_Doc_ID" int not null,
+"DB_Journal_ID" int not null,
+"Volume" varchar(31),
+"Issue" varchar(31),
+primary key ("DB_Doc_ID","DB_Journal_ID")
+);
+ALTER TABLE "Journal_paper" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Doc_ID") REFERENCES "Document"("DB_Doc_ID") ON DELETE CASCADE;
+ALTER TABLE "Journal_paper" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Journal_ID") REFERENCES "Journal"("DB_Journal_ID") ON DELETE CASCADE;
+
+
+create table "Book"(
+"DB_Book_ID" serial,
+"Title" varchar(127),
+"Volume" varchar(31),
+"Series" varchar(127),
+"Publisher" varchar(127),
+"DB_City_Site_ID" int not null,
+"EXT_ISBN" varchar(127),
+primary key ("DB_Book_ID")
+);
+ALTER TABLE "Book" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_City_Site_ID") REFERENCES "City_Site"("DB_City_Site_ID") ON DELETE CASCADE;
+
+
+
+create table "Book_chapter"(
+"DB_Doc_ID" int not null,
+"DB_Book_ID" int not null,
+"Super_part_title" varchar(127),
+primary key ("DB_Doc_ID","DB_Book_ID")
+);
+ALTER TABLE "Book_chapter" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Doc_ID") REFERENCES "Document"("DB_Doc_ID") ON DELETE CASCADE;
+ALTER TABLE "Book_chapter" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Book_ID") REFERENCES "Book"("DB_Book_ID") ON DELETE CASCADE;
+
+create table "Conference"(
+"DB_Conference_ID" serial,
+"Name" varchar(127),
+"Abbreviation" varchar(127),
+primary key ("DB_Conference_ID")
+);
+
+
+create table "Conference_instance"(
+"DB_Conference_inst_ID" serial,
+"DB_Conference_ID" int not null,
+"DB_City_Site_ID" int not null,
+"Start_date" timestamp,
+"End_date" timestamp,
+"Conf_number" int,
+"Conf_publication_name" varchar(127),
+primary key ("DB_Conference_inst_ID")
+);
+
+ALTER TABLE "Conference_instance" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Conference_ID") REFERENCES "Conference"("DB_Conference_ID") ON DELETE CASCADE;
+ALTER TABLE "Conference_instance" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_City_Site_ID") REFERENCES "City_Site"("DB_City_Site_ID") ON DELETE CASCADE;
+
+
+
+create table "Conference_abstract"(
+"DB_Doc_ID" int not null,
+"DB_Conference_inst_ID" int not null,
+"Abstract_number" int,
+primary key ("DB_Doc_ID","DB_Conference_inst_ID")
+);
+ALTER TABLE "Conference_abstract" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Doc_ID") REFERENCES "Document"("DB_Doc_ID") ON DELETE CASCADE;
+ALTER TABLE "Conference_abstract" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Conference_inst_ID") REFERENCES "Conference_instance"("DB_Conference_inst_ID") ON DELETE CASCADE;

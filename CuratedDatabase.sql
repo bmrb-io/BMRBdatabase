@@ -90,7 +90,7 @@ create table "Study"(
 "Type" varchar(128),
 "Details" text,
 primary key("DB_Study_ID")
-)
+);
 
 
 create table "Study_entry_list"(
@@ -101,7 +101,6 @@ create table "Study_entry_list"(
 primary key ("DB_Study_ID","DB_BMRB_accession_code")
 );
 ALTER TABLE "Study_entry_list" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Study_ID") REFERENCES "Study"("DB_Study_ID") ON DELETE CASCADE;
-ALTER TABLE "Study_entry_list" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_BMRB_accession_code") REFERENCES "Entry"("DB_BMRB_accession_code") ON DELETE CASCADE;
 
 
 
@@ -142,6 +141,7 @@ primary key ("DB_Org_unit_ID")
 );
 ALTER TABLE "Organization_unit" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Organization_ID") REFERENCES "Organization"("DB_Organization_ID") ON DELETE CASCADE;
 ALTER TABLE "Organization_unit" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_City_site_ID") REFERENCES "City_site"("DB_City_site_ID") ON DELETE CASCADE;
+
 
 
 create table "Person"(
@@ -569,3 +569,32 @@ primary key ("DB_Chem_comp_atom_ID","DB_Ambiguity_code_ID")
 ALTER TABLE "Chem_comp_allowed_amb_code" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Ambiguity_code_ID") REFERENCES "Ambiguity_code"("DB_Ambiguity_code_ID") ON DELETE CASCADE;
 ALTER TABLE "Chem_comp_allowed_amb_code" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Chem_comp_atom_ID") REFERENCES "Chem_comp_atom"("DB_Chem_comp_atom_ID") ON DELETE CASCADE;
 --Tested upto this point
+
+
+--Entity section
+create table "Entity"(
+"DB_Entity_ID" serial,
+"Type" varchar(128),
+"Polymer_common_type" varchar(31),
+"Polymer_type" varchar(31),
+"Polymer_type_details" text,
+"Polymer_seq_one_letter_code_can" text,
+"Polymer_seq_one_letter_code" text,
+"Ambiguous_conformational_states" varchar(3),
+"Ambiguous_chem_comp_sites" varchar(3),
+"Nstd_monomer" varchar(3),
+"Nstd_chirality" varchar(3),
+"Nstd_linkage" varchar(3),
+"Number_of_chem_comps" int,
+"Number_of_nonpolymer_components" int,
+"Paramagnetic" varchar(13),
+"Thiol_state" varchar(127),
+"Src_method" varchar(127),
+"Parent_entity_ID" int,
+"Fragment" text,
+"Mutation" text,
+"Calc_isoelectric_point" float,
+"Formula_weight" float,
+"Formula_weight_exptl" float,
+"Formula_weight_exptl_meth" varchar(127),
+);

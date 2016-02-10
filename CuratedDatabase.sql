@@ -1,7 +1,7 @@
 -- create table sql script for curated database
 
 create table "Document"(
-"DB_Doc_ID" serial primary key,
+"DB_Doc_ID" serial,
 "EXT_CAS_abstract_code" varchar(31),
 "EXT_MEDLINE_UI_code" varchar(31),
 "EXT_DOI" varchar(31),
@@ -12,13 +12,13 @@ create table "Document"(
 "URL" varchar(127),
 "Page_first" int,
 "Page_last" int,
-"Year" int
+"Year" int,
+primary key("DB_Doc_ID")
 );
 
-CREATE TABLE "Entry"
-(
+create table "Entry"(
+"DB_Entry_ID" serial,
 "DB_Doc_ID" int not null,
-"DB_Entry_ID" serial primary key,
 "Title" text not null,
 "Version_type" varchar(127) not null,
 "Submission_date" timestamp not null,
@@ -79,7 +79,8 @@ CREATE TABLE "Entry"
 "Assigned_BMRB_deposition_code" varchar(15),
 "Assigned_PDB_accession_code" varchar(15),
 "Assigned_PDB_deposition_code" varchar(15),
-"Assigned_restart_ID" varchar(255)
+"Assigned_restart_ID" varchar(255),
+primary key ("DB_Entry_ID")
 );
 ALTER TABLE "Entry" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Doc_ID") REFERENCES "Document"("DB_Doc_ID") ON DELETE CASCADE;
 
@@ -675,7 +676,7 @@ create table "Entity_deleted_atom"(
 primary key ("DB_Entity_chem_comp_ID","DB_Chem_comp_atom_ID")
 );
 
-ALTER TABLE "Entity_deleted_atom" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Entity_chem_comp_ID") REFERENCES "Entity_chem_comp"("DB_Entity_chem_comp_ID") ON DELETE CASCADE;
+ALTER TABLE "Entity_deleted_atom" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Entity_chem_comp_ID") REFERENCES "Entity_chem_comp"("DB_Entity_chem_comp_ID") ON DELETE CASCADE;
 ALTER TABLE "Entity_deleted_atom" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Chem_comp_atom_ID") REFERENCES "Chem_comp_atom"("DB_Chem_comp_atom_ID") ON DELETE CASCADE;
 
 create table "Entity_bond"(
@@ -688,8 +689,8 @@ create table "Entity_bond"(
 primary key("DB_Entity_bond_ID")
 );
 
-ALTER TABLE "Entity_bond" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Entity_atom_ID_1") REFERENCES "Entity_atom"("DB_Entity_atom_ID");
-ALTER TABLE "Entity_bond" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Entity_atom_ID_2") REFERENCES "Entity_atom"("DB_Entity_atom_ID");
+ALTER TABLE "Entity_bond" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Entity_atom_ID_1") REFERENCES "Entity_atom"("DB_Entity_atom_ID") ON DELETE CASCADE;
+ALTER TABLE "Entity_bond" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Entity_atom_ID_2") REFERENCES "Entity_atom"("DB_Entity_atom_ID") ON DELETE CASCADE;
 
 
 create table "Entity_angle"(
@@ -700,9 +701,9 @@ create table "Entity_angle"(
 "Name" varchar(31),
 primary key("DB_Entity_angle_ID")
 );
-ALTER TABLE "Entity_bond" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Entity_atom_ID_1") REFERENCES "Entity_atom"("DB_Entity_atom_ID");
-ALTER TABLE "Entity_bond" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Entity_atom_ID_2") REFERENCES "Entity_atom"("DB_Entity_atom_ID");
-ALTER TABLE "Entity_bond" ADD CONSTRAINT fk3 FOREIGN KEY ("DB_Entity_atom_ID_3") REFERENCES "Entity_atom"("DB_Entity_atom_ID");
+ALTER TABLE "Entity_angle" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Entity_atom_ID_1") REFERENCES "Entity_atom"("DB_Entity_atom_ID") ON DELETE CASCADE;
+ALTER TABLE "Entity_angle" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Entity_atom_ID_2") REFERENCES "Entity_atom"("DB_Entity_atom_ID") ON DELETE CASCADE;
+ALTER TABLE "Entity_angle" ADD CONSTRAINT fk3 FOREIGN KEY ("DB_Entity_atom_ID_3") REFERENCES "Entity_atom"("DB_Entity_atom_ID") ON DELETE CASCADE;
 
 
 create table "Entity_torsion_angle"(
@@ -714,14 +715,14 @@ create table "Entity_torsion_angle"(
 "Name" varchar(31),
 primary key("DB_Entity_torsion_angle_ID")
 );
-ALTER TABLE "Entity_bond" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Entity_atom_ID_1") REFERENCES "Entity_atom"("DB_Entity_atom_ID");
-ALTER TABLE "Entity_bond" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Entity_atom_ID_2") REFERENCES "Entity_atom"("DB_Entity_atom_ID");
-ALTER TABLE "Entity_bond" ADD CONSTRAINT fk3 FOREIGN KEY ("DB_Entity_atom_ID_3") REFERENCES "Entity_atom"("DB_Entity_atom_ID");
-ALTER TABLE "Entity_bond" ADD CONSTRAINT fk4 FOREIGN KEY ("DB_Entity_atom_ID_4") REFERENCES "Entity_atom"("DB_Entity_atom_ID");
+ALTER TABLE "Entity_torsion_angle" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Entity_atom_ID_1") REFERENCES "Entity_atom"("DB_Entity_atom_ID") ON DELETE CASCADE;
+ALTER TABLE "Entity_torsion_angle" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Entity_atom_ID_2") REFERENCES "Entity_atom"("DB_Entity_atom_ID") ON DELETE CASCADE;
+ALTER TABLE "Entity_torsion_angle" ADD CONSTRAINT fk3 FOREIGN KEY ("DB_Entity_atom_ID_3") REFERENCES "Entity_atom"("DB_Entity_atom_ID") ON DELETE CASCADE;
+ALTER TABLE "Entity_torsion_angle" ADD CONSTRAINT fk4 FOREIGN KEY ("DB_Entity_atom_ID_4") REFERENCES "Entity_atom"("DB_Entity_atom_ID") ON DELETE CASCADE;
 
 
 create table "Organism"(
-"DB_Organism_ID" serial
+"DB_Organism_ID" serial,
 "Organism_name_common" varchar(127),
 "Organism_acronym" varchar(127),
 "EXT_ICTVdb_decimal_code" varchar(127),
@@ -759,10 +760,173 @@ create table "Natural_source"(
 "DB_Entity_segment_ID" int,
 "DB_Organism_ID" int,
 "DB_Source_location_ID" int,
-"DB_Doc_ID"
+"DB_Doc_ID" int,
+primary key ("DB_Natural_src_ID")
 );
 ALTER TABLE "Natural_source" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Entity_ID") REFERENCES "Entity"("DB_Entity_ID") ON DELETE CASCADE;
 ALTER TABLE "Natural_source" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Entity_segment_ID") REFERENCES "Entity_segment"("DB_Entity_segment_ID") ON DELETE CASCADE;
 ALTER TABLE "Natural_source" ADD CONSTRAINT fk3 FOREIGN KEY ("DB_Organism_ID") REFERENCES "Organism"("DB_Organism_ID") ON DELETE CASCADE;
 ALTER TABLE "Natural_source" ADD CONSTRAINT fk4 FOREIGN KEY ("DB_Source_location_ID") REFERENCES "Source_location"("DB_Source_location_ID") ON DELETE CASCADE;
-ALTER TABLE "Natural_source" ADD CONSTRAINT fk4 FOREIGN KEY ("DB_Doc_ID") REFERENCES "Document"("DB_Doc_ID") ON DELETE CASCADE;
+ALTER TABLE "Natural_source" ADD CONSTRAINT fk5 FOREIGN KEY ("DB_Doc_ID") REFERENCES "Document"("DB_Doc_ID") ON DELETE CASCADE;
+
+
+create table "Assembly"(
+"DB_Assembly_ID" serial,
+"Number_of_components" int,
+"Organic_ligands" varchar(31),
+"Metal_ions" varchar(31),
+"Non_standard_bonds" varchar(31),
+"Ambiguous_chem_comp_sites" varchar(31),
+"Paramagnetic" varchar(31) not null,
+"Thiol_state" varchar(127),
+"Molecular_mass" float,
+primary key ("DB_Assembly_ID")
+);
+
+create table "Assembly_class"(
+"DB_Assembly_ID" int not null,
+"Assembly_class" varchar(127) not null,
+primary key ("DB_Assembly_ID","Assembly_class")
+);
+ALTER TABLE "Assembly_class" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Assembly_ID") REFERENCES "Assembly"("DB_Assembly_ID") ON DELETE CASCADE;
+
+
+create table "Assembly_entity"(
+"DB_Assembly_entity_ID" serial,
+"DB_Assembly_ID" int not null,
+"DB_Entity_ID" int not null,
+"LCL_Assembly_entity_num" varchar(31),
+"Magnetic_equivalence_group_code" varchar(31),
+"Role" varchar(127),
+primary key("DB_Assembly_entity_ID")
+);
+ALTER TABLE "Assembly_entity" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Assembly_ID") REFERENCES "Assembly"("DB_Assembly_ID") ON DELETE CASCADE;
+ALTER TABLE "Assembly_entity" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Entity_ID") REFERENCES "Entity"("DB_Entity_ID") ON DELETE CASCADE;
+
+
+
+create table "Atom_type"(
+"DB_Atom_type_ID" serial,
+"Symbol" varchar(13),
+"Atomic_number" int,
+"Isotope_number" int,
+"Oxidation_number" varchar(12),
+"Paramagnetic" varchar(13),
+"Electron_configuration" varchar(31),
+"Unpaired_electron_number" int,
+"Atomic_mass" float,
+"Van_der_Vaals_radii" float,
+primary key ("DB_Atom_type_ID")
+);
+
+create table "Assembly_deleted_atom"(
+"DB_Assembly_entity_ID" int not null,
+"DB_Entity_chem_comp_ID" int not null,
+"DB_Chem_comp_atom_ID" int not null,
+primary key ("DB_Assembly_entity_ID","DB_Entity_chem_comp_ID","DB_Chem_comp_atom_ID")
+);
+ALTER TABLE "Assembly_deleted_atom" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Assembly_entity_ID") REFERENCES "Assembly_entity"("DB_Assembly_entity_ID") ON DELETE CASCADE;
+ALTER TABLE "Assembly_deleted_atom" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Entity_chem_comp_ID") REFERENCES "Entity_chem_comp"("DB_Entity_chem_comp_ID") ON DELETE CASCADE;
+ALTER TABLE "Assembly_deleted_atom" ADD CONSTRAINT fk3 FOREIGN KEY ("DB_Chem_comp_atom_ID") REFERENCES "Chem_comp_atom"("DB_Chem_comp_atom_ID") ON DELETE CASCADE;
+
+
+
+create table "Assembly_synonym"(
+"DB_Assembly_ID" int not null,
+"Name" varchar(127),
+"Name_form" varchar(127),
+primary key ("DB_Assembly_ID","Name")
+);
+ALTER TABLE "Assembly_synonym" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Assembly_ID") REFERENCES "Assembly"("DB_Assembly_ID") ON DELETE CASCADE;
+
+
+
+
+create table "Assembly_systematic_name"(
+"DB_Assembly_ID" int not null,
+"Naming_system" varchar(127),
+"Name" varchar(127),
+"Name_form" varchar(127),
+primary key ("DB_Assembly_ID","Naming_system")
+);
+ALTER TABLE "Assembly_systematic_name" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Assembly_ID") REFERENCES "Assembly"("DB_Assembly_ID") ON DELETE CASCADE;
+
+
+create table "Interaction_type"(
+"DB_Interaction_type_ID" serial,
+"Name" varchar(127),
+"Details" varchar(2048),
+primary key("DB_Interaction_type_ID")
+);
+
+create table "Assembly_chem_comp"(
+"DB_Assembly_chem_comp_ID" serial,
+"DB_Assembly_entity_ID" int not null,
+"DB_Entity_chem_comp_ID" int not null,
+"LCL_Assembly_chem_comp_num" varchar(31),
+primary key ("DB_Assembly_chem_comp_ID")
+);
+
+ALTER TABLE "Assembly_chem_comp" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Assembly_entity_ID") REFERENCES "Assembly_entity"("DB_Assembly_entity_ID") ON DELETE CASCADE;
+ALTER TABLE "Assembly_chem_comp" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Entity_chem_comp_ID") REFERENCES "Entity_chem_comp"("DB_Entity_chem_comp_ID") ON DELETE CASCADE;
+
+
+create table "Assembly_atom"(
+"DB_Assembly_atom_ID" serial,
+"DB_Assembly_entity_ID" int not null,
+"DB_Entity_chem_comp_ID" int not null,
+"DB_Chem_comp_atom_ID" int not null,
+"LCL_Assembly_atom_num" varchar(31),
+primary key ("DB_Assembly_atom_ID")
+);
+ALTER TABLE "Assembly_atom" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Assembly_entity_ID") REFERENCES "Assembly_entity"("DB_Assembly_entity_ID") ON DELETE CASCADE;
+ALTER TABLE "Assembly_atom" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Entity_chem_comp_ID") REFERENCES "Entity_chem_comp"("DB_Entity_chem_comp_ID") ON DELETE CASCADE;
+ALTER TABLE "Assembly_atom" ADD CONSTRAINT fk3 FOREIGN KEY ("DB_Chem_comp_atom_ID") REFERENCES "Chem_comp_atom"("DB_Chem_comp_atom_ID") ON DELETE CASCADE;
+
+create table "Assembly_biological_function"(
+"DB_Assembly_ID" int not null,
+"DB_Biological_function_ID" int not null,
+primary key("DB_Assembly_ID","DB_Biological_function_ID")
+);
+ALTER TABLE "Assembly_biological_function"  ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Assembly_ID") REFERENCES "Assembly"("DB_Assembly_ID") ON DELETE CASCADE;
+ALTER TABLE "Assembly_biological_function"  ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Biological_function_ID") REFERENCES "Biological_function"("DB_Biological_function_ID") ON DELETE CASCADE;
+
+create table "Assembly_bond"(
+"DB_Assembly_bond_ID" serial,
+"DB_Assembly_atom_ID_1" int not null,
+"DB_Assembly_atom_ID_2" int not null,
+"Type" varchar(127),
+"Order" varchar(127),
+primary key ("DB_Assembly_bond_ID")
+);
+ALTER TABLE "Assembly_bond" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Assembly_atom_ID_1") REFERENCES "Assembly_atom"("DB_Assembly_atom_ID") ON DELETE CASCADE;
+ALTER TABLE "Assembly_bond" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Assembly_atom_ID_2") REFERENCES "Assembly_atom"("DB_Assembly_atom_ID") ON DELETE CASCADE;
+
+create table "Assembly_angle"(
+"DB_Assembly_angle_ID" serial,
+"DB_Assembly_atom_ID_1" int not null,
+"DB_Assembly_atom_ID_2" int not null,
+"DB_Assembly_atom_ID_3" int not null,
+"Name" varchar(127),
+primary key ("DB_Assembly_angle_ID")
+);
+ALTER TABLE "Assembly_angle" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Assembly_atom_ID_1") REFERENCES "Assembly_atom"("DB_Assembly_atom_ID") ON DELETE CASCADE;
+ALTER TABLE "Assembly_angle" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Assembly_atom_ID_2") REFERENCES "Assembly_atom"("DB_Assembly_atom_ID") ON DELETE CASCADE;
+ALTER TABLE "Assembly_angle" ADD CONSTRAINT fk3 FOREIGN KEY ("DB_Assembly_atom_ID_3") REFERENCES "Assembly_atom"("DB_Assembly_atom_ID") ON DELETE CASCADE;
+
+
+create table "Assembly_torsion_angle"(
+"DB_Assembly_torsion_angle_ID" serial,
+"DB_Assembly_atom_ID_1" int not null,
+"DB_Assembly_atom_ID_2" int not null,
+"DB_Assembly_atom_ID_3" int not null,
+"DB_Assembly_atom_ID_4" int not null,
+"Name" varchar(127),
+primary key ("DB_Assembly_torsion_angle_ID")
+);
+ALTER TABLE "Assembly_torsion_angle" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Assembly_atom_ID_1") REFERENCES "Assembly_atom"("DB_Assembly_atom_ID") ON DELETE CASCADE;
+ALTER TABLE "Assembly_torsion_angle" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Assembly_atom_ID_2") REFERENCES "Assembly_atom"("DB_Assembly_atom_ID") ON DELETE CASCADE;
+ALTER TABLE "Assembly_torsion_angle" ADD CONSTRAINT fk3 FOREIGN KEY ("DB_Assembly_atom_ID_3") REFERENCES "Assembly_atom"("DB_Assembly_atom_ID") ON DELETE CASCADE;
+ALTER TABLE "Assembly_torsion_angle" ADD CONSTRAINT fk4 FOREIGN KEY ("DB_Assembly_atom_ID_4") REFERENCES "Assembly_atom"("DB_Assembly_atom_ID") ON DELETE CASCADE;
+
+--Tested upto here

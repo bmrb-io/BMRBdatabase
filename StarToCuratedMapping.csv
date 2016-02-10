@@ -384,3 +384,11 @@ Entity_segment,DB_Entity_chem_comp_ID_end,serial,FK
 Entity_segment,LCL_Segment_num,??,
 Entity_segment,Name,??,
 Entity_segment,Type,??,
+
+Entity_atom,DB_Entity_atom_ID,serial,PK
+Entity_atom,DB_Entity_chem_comp_ID,serial,FK
+Entity_atom,DB_Chem_comp_atom_ID,serial,FK
+Entity_atom,LCL_Entity_atom_num,??,
+
+Entity_deleted_atom,DB_Entity_chem_comp_ID,serial,PKFK
+Entity_deleted_atom,DB_Chem_comp_atom_ID,serial,PKFK

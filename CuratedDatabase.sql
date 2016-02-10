@@ -597,6 +597,7 @@ create table "Entity"(
 "Formula_weight" float,
 "Formula_weight_exptl" float,
 "Formula_weight_exptl_meth" varchar(127),
+primary key("DB_Entity_ID")
 );
 
 create table "Entity_product"(
@@ -632,16 +633,18 @@ create table "Entity_systematic_name"(
 "Name_form" varchar(127),
 primary key("DB_Entity_ID","Name")
 );
+ALTER TABLE "Entity_systematic_name" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Entity_ID") REFERENCES "Entity"("DB_Entity_ID") ON DELETE CASCADE;
+
 
 create table "Entity_chem_comp"(
 "DB_Entity_chem_comp_ID" serial,
-"DB_Entity_ID" int not null
+"DB_Entity_ID" int not null,
 "DB_Chem_comp_ID" int not null,
 "LCL_Entity_chem_comp_ordinal" varchar(127),
 primary key ("DB_Entity_chem_comp_ID")
-)
+);
 ALTER TABLE "Entity_chem_comp" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Entity_ID") REFERENCES "Entity"("DB_Entity_ID") ON DELETE CASCADE;
-ALTER TABLE "Entity_synonym" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Entity_ID") REFERENCES "Entity"("DB_Entity_ID") ON DELETE CASCADE;
+ALTER TABLE "Entity_chem_comp" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Chem_comp_ID") REFERENCES "Chem_comp"("DB_Chem_comp_ID") ON DELETE CASCADE;
 
 create table "Entity_segment"(
 "DB_Entity_segment_ID" serial,
@@ -654,3 +657,112 @@ primary key ("DB_Entity_segment_ID")
 );
 ALTER TABLE "Entity_segment" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Entity_chem_comp_ID_start") REFERENCES "Entity_chem_comp"("DB_Entity_chem_comp_ID") ON DELETE CASCADE;
 ALTER TABLE "Entity_segment" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Entity_chem_comp_ID_end") REFERENCES "Entity_chem_comp"("DB_Entity_chem_comp_ID") ON DELETE CASCADE;
+
+
+create table "Entity_atom"(
+"DB_Entity_atom_ID" serial,
+"DB_Entity_chem_comp_ID" int not null,
+"DB_Chem_comp_atom_ID" int not null,
+"LCL_Entity_atom_num" varchar(127),
+primary key("DB_Entity_atom_ID")
+);
+ALTER TABLE "Entity_atom" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Entity_chem_comp_ID") REFERENCES "Entity_chem_comp"("DB_Entity_chem_comp_ID") ON DELETE CASCADE;
+ALTER TABLE "Entity_atom" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Chem_comp_atom_ID") REFERENCES "Chem_comp_atom"("DB_Chem_comp_atom_ID") ON DELETE CASCADE;
+
+create table "Entity_deleted_atom"(
+"DB_Entity_chem_comp_ID" int not null,
+"DB_Chem_comp_atom_ID" int not null,
+primary key ("DB_Entity_chem_comp_ID","DB_Chem_comp_atom_ID")
+);
+
+ALTER TABLE "Entity_deleted_atom" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Entity_chem_comp_ID") REFERENCES "Entity_chem_comp"("DB_Entity_chem_comp_ID") ON DELETE CASCADE;
+ALTER TABLE "Entity_deleted_atom" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Chem_comp_atom_ID") REFERENCES "Chem_comp_atom"("DB_Chem_comp_atom_ID") ON DELETE CASCADE;
+
+create table "Entity_bond"(
+"DB_Entity_bond_ID" serial,
+"DB_Entity_atom_ID_1" int not null,
+"DB_Entity_atom_ID_2" int not null,
+"Name" varchar(31),
+"Type" varchar(31),
+"Value_order" varchar(31),
+primary key("DB_Entity_bond_ID")
+);
+
+ALTER TABLE "Entity_bond" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Entity_atom_ID_1") REFERENCES "Entity_atom"("DB_Entity_atom_ID");
+ALTER TABLE "Entity_bond" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Entity_atom_ID_2") REFERENCES "Entity_atom"("DB_Entity_atom_ID");
+
+
+create table "Entity_angle"(
+"DB_Entity_angle_ID" serial,
+"DB_Entity_atom_ID_1" int not null,
+"DB_Entity_atom_ID_2" int not null,
+"DB_Entity_atom_ID_3" int not null,
+"Name" varchar(31),
+primary key("DB_Entity_angle_ID")
+);
+ALTER TABLE "Entity_bond" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Entity_atom_ID_1") REFERENCES "Entity_atom"("DB_Entity_atom_ID");
+ALTER TABLE "Entity_bond" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Entity_atom_ID_2") REFERENCES "Entity_atom"("DB_Entity_atom_ID");
+ALTER TABLE "Entity_bond" ADD CONSTRAINT fk3 FOREIGN KEY ("DB_Entity_atom_ID_3") REFERENCES "Entity_atom"("DB_Entity_atom_ID");
+
+
+create table "Entity_torsion_angle"(
+"DB_Entity_torsion_angle_ID" serial,
+"DB_Entity_atom_ID_1" int not null,
+"DB_Entity_atom_ID_2" int not null,
+"DB_Entity_atom_ID_3" int not null,
+"DB_Entity_atom_ID_4" int not null,
+"Name" varchar(31),
+primary key("DB_Entity_torsion_angle_ID")
+);
+ALTER TABLE "Entity_bond" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Entity_atom_ID_1") REFERENCES "Entity_atom"("DB_Entity_atom_ID");
+ALTER TABLE "Entity_bond" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Entity_atom_ID_2") REFERENCES "Entity_atom"("DB_Entity_atom_ID");
+ALTER TABLE "Entity_bond" ADD CONSTRAINT fk3 FOREIGN KEY ("DB_Entity_atom_ID_3") REFERENCES "Entity_atom"("DB_Entity_atom_ID");
+ALTER TABLE "Entity_bond" ADD CONSTRAINT fk4 FOREIGN KEY ("DB_Entity_atom_ID_4") REFERENCES "Entity_atom"("DB_Entity_atom_ID");
+
+
+create table "Organism"(
+"DB_Organism_ID" serial
+"Organism_name_common" varchar(127),
+"Organism_acronym" varchar(127),
+"EXT_ICTVdb_decimal_code" varchar(127),
+"EXT_NCBI_taxonomy_ID" varchar(127),
+"EXT_ATCC_number" varchar(127),
+"Superkingdom" varchar(127),
+"Kingdom" varchar(127),
+"Genus" varchar(127),
+"Species" varchar(127),
+"Strain" varchar(127),
+"Variant" varchar(127),
+"Subvariant" varchar(127),
+primary key("DB_Organism_ID")
+);
+
+create table "Source_location"(
+"DB_Source_location_ID" serial,
+"Organ" varchar(127),
+"Tissue" varchar(127),
+"Cell_line" varchar(127),
+"Cell_type" varchar(127),
+"Organelle" varchar(127),
+"Fraction" varchar(127),
+"Secretion" varchar(127),
+"Plasmid" varchar(127),
+"Fragment" varchar(127),
+"Gene_mnemonic" varchar(127),
+"Organism_development_stage" varchar(127),
+primary key("DB_Source_location_ID")
+);
+
+create table "Natural_source"(
+"DB_Natural_src_ID" serial,
+"DB_Entity_ID" int not null,
+"DB_Entity_segment_ID" int,
+"DB_Organism_ID" int,
+"DB_Source_location_ID" int,
+"DB_Doc_ID"
+);
+ALTER TABLE "Natural_source" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Entity_ID") REFERENCES "Entity"("DB_Entity_ID") ON DELETE CASCADE;
+ALTER TABLE "Natural_source" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Entity_segment_ID") REFERENCES "Entity_segment"("DB_Entity_segment_ID") ON DELETE CASCADE;
+ALTER TABLE "Natural_source" ADD CONSTRAINT fk3 FOREIGN KEY ("DB_Organism_ID") REFERENCES "Organism"("DB_Organism_ID") ON DELETE CASCADE;
+ALTER TABLE "Natural_source" ADD CONSTRAINT fk4 FOREIGN KEY ("DB_Source_location_ID") REFERENCES "Source_location"("DB_Source_location_ID") ON DELETE CASCADE;
+ALTER TABLE "Natural_source" ADD CONSTRAINT fk4 FOREIGN KEY ("DB_Doc_ID") REFERENCES "Document"("DB_Doc_ID") ON DELETE CASCADE;

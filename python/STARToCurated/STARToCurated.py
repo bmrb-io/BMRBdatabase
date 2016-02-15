@@ -16,24 +16,46 @@ class BMRBDB(object):
         '''
         Constructor
         '''
-        #self.conn=psycopg2.connect("dbname=%s user=%s host=%s"%(dbname,user,host))
+        self.conn=psycopg2.connect("dbname=%s user=%s host=%s"%(dbname,user,host))
     
+    
+   
+        
+    
+    def find_ID(self,table,column_value,id):
+        cmd="select \"%s\" from \"%s\" where "%(id,table)
+        for cv in column_value[:-1]:
+            cmd="%s \"%s\" = \'%s\' and "%(cmd,cv[0],cv[1])
+        cmd="%s \"%s\" = \'%s\';"%(cmd,column_value[-1][0],column_value[-1][1])
+        cur1=self.conn.cursor()
+        cur1.execute(cmd)
+        outdat=[i[0] for i in cur1.fetchall()]
+        cur1.close()
+        return outdat
+        
+        
+        
     def getSTARTdata(self,bmrbid):
         self.starData=bmrb.entry.fromDatabase(bmrbid)
-        print self.starData['entry_information']['_Entry_author']
+        for i in self.starData['entry_information'].tags:
+            print i
     
     def close(self):
         self.conn.close()
        
     
-    def load_country_table(self):
+    def load_table_Country(self):
         cur=self.conn.cursor()
         dat=open('../../country.txt','r').read().split("\n")[:-1]
         for country in dat:
-            cmd="insert into \"Country\" values(DEFAULT,\'%s\');"%(country)
-            cur.execute(cmd)
-            self.conn.commit()
+            if len(self.find_ID('Country', [('Name', country)],'DB_Country_ID'))==0:
+                cmd="insert into \"Country\" values(DEFAULT,\'%s\');"%(country)
+                cur.execute(cmd)
+                self.conn.commit()
+            else:
+                print country," already exists"
         cur.close()
+        
         
     def list_table(self,table_name):
         self.cur1=self.conn.cursor()
@@ -55,6 +77,6 @@ class BMRBDB(object):
 if __name__=="__main__":
     #p=BMRBDB('bmrb','web','manta.bmrb.wisc.edu')
     p=BMRBDB('bmrb','nmr','localhost')
-    #p.load_country_table()
-    #p.close()
-    p.getSTARTdata(15060)
+    p.load_table_Country()
+    p.close()
+    #p.getSTARTdata(15060)

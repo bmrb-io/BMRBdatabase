@@ -22,7 +22,7 @@ Entry,Original_release_date,_Entry.Original_release_date,
 Entry,Origination,_Entry.Origination,NOTNULL
 Entry,NMR_STAR_version,_Entry.NMR_STAR_version,NOTNULL
 Entry,Original_NMR_STAR_version,_Entry.Original_NMR_STAR_version,
-Entry,Experimental_method,_Entry.Experimental_method,NOTNULL,
+Entry,Experimental_method,_Entry.Experimental_method,NOTNULL
 Entry,Experimental_method_subtype,_Entry.Experimental_method_subtype,
 Entry,Dep_release_code_coordinates,_Entry.Dep_release_code_coordinates,
 Entry,Dep_release_code_nmr_constraints,_Entry.Dep_release_code_nmr_constraints,

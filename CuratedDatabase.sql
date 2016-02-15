@@ -18,7 +18,7 @@ primary key("DB_Doc_ID")
 
 create table "Entry"(
 "DB_Entry_ID" serial,
-"DB_Doc_ID" int not null,
+"DB_Doc_ID" int,
 "Title" text not null,
 "Version_type" varchar(127) not null,
 "Submission_date" timestamp not null,

@@ -10,9 +10,9 @@ create table "Document"(
 "Status" varchar(31),
 "Class" varchar(31) not null,
 "URL" varchar(127),
-"Page_first" int,
-"Page_last" int,
-"Year" int,
+"Page_first" varchar(31),
+"Page_last" varchar(31),
+"Year" varchar(31),
 primary key("DB_Doc_ID")
 );
 

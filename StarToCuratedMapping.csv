@@ -117,6 +117,10 @@ Person_affiliation,Cell_phone_number,??,
 Person_affiliation,FAX_number,_Contact_person.FAX_number,
 Person_affiliation,URL,??,
 
+Document_author,DB_Doc_ID,serial,PKFK
+Document_author,Ordianl,??,
+Document_author,DB_Person_ID.serial,FK
+
 Project,DB_Product_ID,serial,PK
 Project,Name,_SG_project.Project_name,
 Project,Type,??,

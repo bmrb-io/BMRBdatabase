@@ -330,7 +330,7 @@ if __name__=="__main__":
     Journal.insert_row()
     Journal_paper=Curated_Table(bmrbid,"Journal_paper",None,[('DB_Doc_ID',Document.id),('DB_Journal_ID',Journal.id)])
     Journal_paper.insert_row2()
-    Chem_comp=callable(bmrbid,'Chem_comp')
+    Chem_comp=(bmrbid,'Chem_comp')
     #test=Curated_Table('15060','Document','DB_Doc_ID',[('DB_Doc_ID',Document.id)])
     #print test.table_dict
     #test.get_id(ent.primary_key)

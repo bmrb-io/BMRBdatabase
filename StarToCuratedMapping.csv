@@ -505,7 +505,6 @@ Assembly_chem_comp,DB_Assembly_entity_ID,serial,FK
 Assembly_chem_comp,DB_Entity_chem_comp_ID,serial,FK
 Assembly_chem_comp,LCL_Assembly_chem_comp_num,??,
 
-
 Assembly_atom,DB_Assembly_atom_ID,serial,PK
 Assembly_atom,DB_Assembly_entity_ID,serial,FK
 Assembly_atom,DB_Entity_chem_comp_ID,serial,FK

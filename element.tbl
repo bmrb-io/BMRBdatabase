@@ -1,0 +1,8 @@
+DB_Element_ID	Symbol	Name	Atomic_number	Avg_isotopic_atomic_mass	Van_der_Waals_radius
+1	H	hydrogen	1	1.00794	1.09
+2	C	carbon	6	12.0107	1.7
+3	N	nitrogen	7	14.0067	1.55
+4	O	oxygen	8	15.9994	1.52
+5	P	phosphorus	15	30.973761	1.8
+6	S	sulfur	16	32.065	1.8
+7	Fe	iron	26	55.845	2

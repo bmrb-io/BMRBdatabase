@@ -105,6 +105,7 @@ class BMRBDB(object):
         return fk
         
     
+    
     def load_table(self,table,table_id):
         self.table_dict=self.get_dict(table)
         fk=self.get_FK(table, table_id)
@@ -184,8 +185,7 @@ class BMRBDB(object):
             print i
         self.cur1.close()
         
-    
-        
+
 
 class Curated_Table(object):
     
@@ -228,6 +228,7 @@ class Curated_Table(object):
                 try:
                     #print tag
                     tag_value=self.starData.getTag(tag)
+                    print tag,tag_value
                 except ValueError:
                     tag_value=['.']
                 if len(tag_value)>1:
@@ -243,7 +244,7 @@ class Curated_Table(object):
 
     def insert_row(self):
         self.check_row()
-        print self.row
+        print self.row,self.rowExist
         if not self.rowExist:
             cmd="insert into \"%s\" (\"%s\","%(self.table,self.primary_key)
             for i in self.row[:-1]:
@@ -252,6 +253,7 @@ class Curated_Table(object):
             for i in self.row[:-1]:
                 cmd="%s \'%s\',"%(cmd,i[1])
             cmd="%s \'%s\');"%(cmd,self.row[-1][1])
+            print cmd
             cur2=self.conn.cursor()
             cur2.execute(cmd)
             self.conn.commit()
@@ -314,23 +316,58 @@ class Curated_Table(object):
             self.id=outdat[0]
         else:
             self.id=None
-        
+class Table_from_file(object):
+    
+    def __init__(self,table,filename):
+        self.table=table
+        self.filename=filename
+        self.conn=psycopg2.connect("dbname=%s user=%s host=%s"%('bmrb','nmr','localhost'))
+    
+    def read_tbl_file(self):
+        f=open(self.filename,'r').read().split("\n")[:-1]
+        self.table_content=[]
+        for i in f:
+            self.table_content.append(i.split("\t"))
+        print self.table_content
+    def insert_data(self):
+        for x in range(1,len(self.table_content)):
+            cmd="insert into \"%s\" ("%(self.table)
+            for i in self.table_content[0][:-1]:
+                cmd="%s \"%s\","%(cmd,i)
+            cmd="%s \"%s\") values ("%(cmd,self.table_content[0][-1])
+            for i in self.table_content[x][:-1]:
+                cmd="%s \'%s\',"%(cmd,i)
+            cmd="%s \'%s\');"%(cmd,self.table_content[x][-1])
+            print cmd
+            cur2=self.conn.cursor()
+            cur2.execute(cmd)
+            self.conn.commit()
+            #print "Row inserted in to  table %s for the entry %s"%(self.table,self.bmrbid)
+              
 
 if __name__=="__main__":
     #p=BMRBDB('bmrb','web','manta.bmrb.wisc.edu')
     #p=BMRBDB('bmrb','nmr','localhost')
     #p.load_table_Country()
     #p.load_table_Entry('16790')
-    bmrbid='15060'
-    Document=Curated_Table(bmrbid,'Document','DB_Doc_ID')
-    Document.insert_row()
-    Entry=Curated_Table(bmrbid,'Entry','DB_Entry_ID',[('DB_Doc_ID',Document.id)])
-    Entry.insert_row()
-    Journal=Curated_Table(bmrbid,'Journal')
-    Journal.insert_row()
-    Journal_paper=Curated_Table(bmrbid,"Journal_paper",None,[('DB_Doc_ID',Document.id),('DB_Journal_ID',Journal.id)])
-    Journal_paper.insert_row2()
-    Chem_comp=(bmrbid,'Chem_comp')
+    
+#     p=Table_from_file('Atom','../../atom.tbl')
+#     p.read_tbl_file()
+#     p.insert_data()
+    
+     bmrbid='100166'
+#     Document=Curated_Table(bmrbid,'Document','DB_Doc_ID')
+#     Document.insert_row()
+#     Entry=Curated_Table(bmrbid,'Entry','DB_Entry_ID',[('DB_Doc_ID',Document.id)])
+#     Entry.insert_row()
+#     Journal=Curated_Table(bmrbid,'Journal')
+#     Journal.insert_row()
+#     Journal_paper=Curated_Table(bmrbid,"Journal_paper",None,[('DB_Doc_ID',Document.id),('DB_Journal_ID',Journal.id)])
+#     Journal_paper.insert_row2()
+     Chem_comp=Curated_Table(bmrbid,'Chem_comp')
+     Chem_comp.insert_row()
+#     
+    
     #test=Curated_Table('15060','Document','DB_Doc_ID',[('DB_Doc_ID',Document.id)])
     #print test.table_dict
     #test.get_id(ent.primary_key)

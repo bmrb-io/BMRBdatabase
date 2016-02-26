@@ -10,9 +10,9 @@ create table "Document"(
 "Status" varchar(31),
 "Class" varchar(31) not null,
 "URL" varchar(127),
-"Page_first" int,
-"Page_last" int,
-"Year" int,
+"Page_first" varchar(31),
+"Page_last" varchar(31),
+"Year" varchar(31),
 primary key("DB_Doc_ID")
 );
 
@@ -156,6 +156,15 @@ create table "Person"(
 primary key ("DB_Person_ID")
 );
 
+create table "Document_author"(
+"DB_Doc_ID" int,
+"Ordinal" varchar(127),
+"DB_Person_ID" int,
+primary key ("DB_Doc_ID","Ordinal")
+);
+ALTER TABLE "Document_author" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Doc_ID") REFERENCES "Document"("DB_Doc_ID") ON DELETE CASCADE;
+ALTER TABLE "Document_author" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Person_ID") REFERENCES "Person"("DB_Person_ID") ON DELETE CASCADE;
+
 
 create table "Person_affiliation"(
 "DB_Person_affiliations_ID" serial,
@@ -204,6 +213,15 @@ primary key ("DB_Doc_ID","DB_Journal_ID")
 );
 ALTER TABLE "Journal_paper" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Doc_ID") REFERENCES "Document"("DB_Doc_ID") ON DELETE CASCADE;
 ALTER TABLE "Journal_paper" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Journal_ID") REFERENCES "Journal"("DB_Journal_ID") ON DELETE CASCADE;
+
+create table "Thesis"(
+"DB_Doc_ID" int,
+"DB_Organization_ID" int,
+primary key ("DB_Doc_ID")
+);
+
+ALTER TABLE "Thesis" ADD CONSTRAINT fk1 FOREIGN KEY ("DB_Doc_ID") REFERENCES "Document"("DB_Doc_ID") ON DELETE CASCADE;
+ALTER TABLE "Thesis" ADD CONSTRAINT fk2 FOREIGN KEY ("DB_Organization_ID") REFERENCES "Organization"("DB_Organization_ID") ON DELETE CASCADE;
 
 
 create table "Book"(
